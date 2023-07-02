@@ -1,16 +1,13 @@
 def is_valid(sudoku, row, col, num):
     for i in range(9):
-        if sudoku[row][i] == num:
-            return False, f"Number {num} is already in {row+1} row line"
-        if sudoku[i][col] == num:
-            return False, f"Number {num} is already in {col+1} column line"
+        if sudoku[row][i] == num or sudoku[i][col] == num:
+            return False
     start_row, start_col = 3 * (row // 3), 3 * (col // 3)
     for i in range(3):
         for j in range(3):
             if sudoku[i + start_row][j + start_col] == num:
-                return False, f"Number {num} is already in the {row//3+1},{col//3+1} box"
-    return True, ""
-
+                return False
+    return True
 
 def solve_sudoku(sudoku, row=0, col=0):
     # 순서대로 칸 이동하기
