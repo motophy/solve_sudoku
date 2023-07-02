@@ -56,6 +56,54 @@ class Auto_ApplicateApp:
                 entry.delete(0, tk.END)
                 entry.insert(tk.END, str(sudoku[index[0]][index[1]]))
 
+    # 엔트리창에 숫자 입력시 규칙에 맞는지 안맞으면 엔트리창 숫자 색깔 변경하기
+    def show_entry_valid(self, event):
+        # 엔트리 폰트색상 검정색으로 다시 바꾸기
+        for index, entry in self.entries.items():
+            entry.config(fg='black')
+        # 스도쿠리스트 만들기
+        sudoku = [[0] * 9 for _ in range(9)]
+        for index, entry in self.entries.items():
+            try:
+                if entry.get() != "":
+                    sudoku[index[0]][index[1]] = int(entry.get())
+            except ValueError:
+                messagebox.showerror("Error", "Invalid input. Please enter only numbers.")
+                return
+
+        for index, entry in self.entries.items():
+            try:
+                num = int(entry.get())
+            except:
+                print(entry.get())
+                print(type(entry.get()))
+                continue
+
+
+            # 가로축에서 조회하기
+            for x in range(9):
+                if x == index[1]:
+                    continue
+                if sudoku[index[0]][x] == num:
+                    entry.config(fg='red')
+            # 세로축에서 조회하기
+            for y in range(9):
+                if y == index[0]:
+                    continue
+                if sudoku[y][index[1]] == num:
+                    entry.config(fg='red')
+
+            start_row, start_col = 3 * (index[0] // 3), 3 * (index[1] // 3)
+            for i in range(3):
+                for j in range(3):
+                    if i + start_row == index[0] and j + start_col == index[1]:
+                        continue
+                    if sudoku[i + start_row][j + start_col] == num:
+                        entry.config(fg='red')
+
+
+
+
     def create_entry_widget(self):
         self.entries = {}
         for i in range(3):
@@ -68,6 +116,7 @@ class Auto_ApplicateApp:
                     for y in range(3):
                         self.entries[((i*3)+x, (j*3)+y)] = tk.Entry(self.frame, width=2, font=('Arial', 20), justify='center')
                         self.entries[((i*3)+x, (j*3)+y)].grid(row=x, column=y)
+                        self.entries[((i * 3) + x, (j * 3) + y)].bind('<KeyRelease>', self.show_entry_valid)
 
 
         solve_button = tk.Button(self.root, text="Solve", command=self.validate)
