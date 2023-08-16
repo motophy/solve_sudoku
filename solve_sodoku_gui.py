@@ -75,8 +75,6 @@ class Auto_ApplicateApp:
             try:
                 num = int(entry.get())
             except:
-                print(entry.get())
-                print(type(entry.get()))
                 continue
 
 
